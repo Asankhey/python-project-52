@@ -1,0 +1,12 @@
+[tool.poetry]
+name = "hexlet-code"
+version = "0.1.0"
+description = ""
+authors = [
+    { name = "asankheya", email = "lilitasa@proton.me" }
+]
+packages = [{ include = "task_manager" }]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
