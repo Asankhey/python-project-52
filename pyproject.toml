@@ -2,9 +2,8 @@
 name = "hexlet-code"
 version = "0.1.0"
 description = ""
-authors = [
-    { name = "asankheya", email = "lilitasa@proton.me" }
-]
+authors = ["asankheya <lilitasa@proton.me>"]
+
 packages = [{ include = "task_manager" }]
 
 [build-system]
