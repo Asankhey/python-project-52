@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'django_bootstrap5',
     'users',
     'statuses',
+    'task_manager',
 ]
 
 MIDDLEWARE = [

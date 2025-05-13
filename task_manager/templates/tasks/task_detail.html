@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1 class="my-4">{{ task.name }}</h1>
+  <p><strong>Описание:</strong> {{ task.description }}</p>
+  <p><strong>Автор:</strong> {{ task.author.get_full_name }}</p>
+  <p><strong>Исполнитель:</strong> {{ task.executor.get_full_name }}</p>
+  <p><strong>Статус:</strong> {{ task.status.name }}</p>
+  <p><strong>Дата создания:</strong> {{ task.created_at|date:"d.m.Y H:i" }}</p>
+
+  {% if task.author == request.user %}
+    <a href="{% url 'tasks:tasks_update' task.id %}" class="btn btn-secondary">Изменить</a>
+    <a href="{% url 'tasks:tasks_delete' task.id %}" class="btn btn-danger">Удалить</a>
+  {% endif %}
+{% endblock %}
