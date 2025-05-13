@@ -21,9 +21,9 @@
       <td>{{ user.date_joined|date:"d.m.Y H:i" }}</td>
       <td>
         {% if user == request.user %}
-        <a href="{% url 'users:update' user.id %}">Изменить</a>
+        <a href="{% url 'users:users_update' user.id %}">Изменить</a>
         <br>
-        <a href="{% url 'users:delete' user.id %}">Удалить</a>
+        <a href="{% url 'users:users_delete' user.id %}">Удалить</a>
         {% endif %}
       </td>
     </tr>

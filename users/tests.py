@@ -1,13 +1,14 @@
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 class UserCRUDTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='testuser', password='12345')
         self.client.force_login(self.user)
-        self.other_user = User.objects.create_user(username='otheruser')
 
     def test_create_user(self):
         response = self.client.post(reverse('users:users_create'), {
@@ -20,16 +21,16 @@ class UserCRUDTest(TestCase):
 
     def test_update_user(self):
         response = self.client.post(
-            reverse('users:users_update', args=[self.other_user.id]),
+            reverse('users:users_update', args=[self.user.id]),
             {'username': 'updatedname'}
         )
         self.assertEqual(response.status_code, 302)
-        self.other_user.refresh_from_db()
-        self.assertEqual(self.other_user.username, 'updatedname')
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.username, 'updatedname')
         self.assertRedirects(response, reverse('users:users_list'))
 
     def test_delete_user(self):
-        response = self.client.post(reverse('users:users_delete', args=[self.other_user.id]))
+        response = self.client.post(reverse('users:users_delete', args=[self.user.id]))
         self.assertEqual(response.status_code, 302)
-        self.assertFalse(User.objects.filter(id=self.other_user.id).exists())
+        self.assertFalse(User.objects.filter(id=self.user.id).exists())
         self.assertRedirects(response, reverse('users:users_list'))
