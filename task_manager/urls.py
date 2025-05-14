@@ -3,7 +3,8 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('users/', include('users.urls')),
-    path('statuses/', include('statuses.urls')),
-    path('tasks/', include('task_manager.tasks.urls')),  # добавляем маршруты задач
+    path('', include('task_manager.tasks.urls', namespace='tasks')),
+    path('users/', include('users.urls', namespace='users')),
+    path('statuses/', include('statuses.urls', namespace='statuses')),
+    path('labels/', include('task_manager.labels.urls', namespace='labels')),
 ]
