@@ -108,6 +108,5 @@ ROLLBAR = {
 
 # Инициализация Rollbar
 import rollbar
-import rollbar.contrib.django.middleware.report_exception
 
 rollbar.init(**ROLLBAR)
