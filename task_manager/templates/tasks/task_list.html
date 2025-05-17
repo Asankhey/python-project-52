@@ -1,8 +1,15 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
   <h1 class="my-4">Задачи</h1>
+
+  <form method="get" class="mb-3">
+    {{ filter.form.as_p }}
+    <button type="submit" class="btn btn-primary">Показать</button>
+  </form>
+
   <a class="btn btn-primary mb-3" href="{% url 'tasks:tasks_create' %}">Создать задачу</a>
+
   <table class="table table-striped">
     <thead>
       <tr>
@@ -17,20 +24,20 @@
     </thead>
     <tbody>
       {% for task in tasks %}
-      <tr>
-        <td><a href="{% url 'tasks:tasks_detail' task.id %}">{{ task.id }}</a></td>
-        <td>{{ task.name }}</td>
-        <td>{{ task.author.get_full_name }}</td>
-        <td>{{ task.executor.get_full_name }}</td>
-        <td>{{ task.status.name }}</td>
-        <td>{{ task.created_at|date:"d.m.Y H:i" }}</td>
-        <td>
-          {% if task.author == request.user %}
-          <a href="{% url 'tasks:tasks_update' task.id %}">Изменить</a><br>
-          <a href="{% url 'tasks:tasks_delete' task.id %}">Удалить</a>
-          {% endif %}
-        </td>
-      </tr>
+        <tr>
+          <td><a href="{% url 'tasks:tasks_detail' task.id %}">{{ task.id }}</a></td>
+          <td>{{ task.name }}</td>
+          <td>{{ task.author.get_full_name }}</td>
+          <td>{{ task.executor.get_full_name }}</td>
+          <td>{{ task.status.name }}</td>
+          <td>{{ task.created_at|date:"d.m.Y H:i" }}</td>
+          <td>
+            {% if task.author == request.user %}
+              <a href="{% url 'tasks:tasks_update' task.id %}">Изменить</a><br>
+              <a href="{% url 'tasks:tasks_delete' task.id %}">Удалить</a>
+            {% endif %}
+          </td>
+        </tr>
       {% endfor %}
     </tbody>
   </table>
