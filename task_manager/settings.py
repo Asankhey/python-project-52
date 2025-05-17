@@ -98,6 +98,7 @@ LOGIN_URL = '/users/login/'
 if DEBUG:
     ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
+# Rollbar config
 ROLLBAR = {
     'access_token': os.getenv('ROLLBAR_TOKEN', 'efe9e218c55f241dc8f124c8ca295a319'),
     'environment': 'development' if DEBUG else 'production',
@@ -108,4 +109,5 @@ ROLLBAR = {
 # Инициализация Rollbar
 import rollbar
 import rollbar.contrib.django.middleware.report_exception
+
 rollbar.init(**ROLLBAR)
