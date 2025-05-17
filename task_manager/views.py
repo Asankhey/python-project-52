@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
+from django.http import HttpResponse  # 👈 добавлено для тестовой ошибки
 
 from .models import Task
 from .forms import TaskForm
@@ -47,3 +48,9 @@ class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixi
 
     def test_func(self):
         return self.request.user.pk == self.get_object().author.pk
+
+
+# 🚨 Тестовая вьюха для Rollbar
+def trigger_error(request):
+    division_by_zero = 1 / 0
+    return HttpResponse("This won't be reached.")
