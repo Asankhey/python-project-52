@@ -50,3 +50,11 @@ class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixi
 
     def test_func(self):
         return self.request.user.pk == self.get_object().author.pk
+
+from django.http import HttpResponse
+
+
+def trigger_error(request):
+    a = None
+    a.method()  # Искусственная ошибка
+    return HttpResponse("This will never be reached")
