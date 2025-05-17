@@ -35,6 +35,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
 ]
 
 ROOT_URLCONF = 'task_manager.urls'
@@ -96,3 +97,15 @@ LOGIN_URL = '/users/login/'
 
 if DEBUG:
     ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
+ROLLBAR = {
+    'access_token': os.getenv('ROLLBAR_TOKEN', 'efe9e218c55f241dc8f124c8ca295a319'),
+    'environment': 'development' if DEBUG else 'production',
+    'code_version': '1.0',
+    'root': BASE_DIR,
+}
+
+# Инициализация Rollbar
+import rollbar
+import rollbar.contrib.django.middleware.report_exception
+rollbar.init(**ROLLBAR)
