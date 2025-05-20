@@ -3,6 +3,9 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from django_filters.views import FilterView
+from django.http import HttpResponse
+import rollbar
+import sys
 
 from task_manager.models import Task
 from task_manager.forms import TaskForm
@@ -52,17 +55,10 @@ class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixi
         return self.request.user.pk == self.get_object().author.pk
 
 
-# Импорт для тестовой ошибки
-from django.http import HttpResponse
-import rollbar
-import sys
-
-
+# Тестовая ошибка для Rollbar
 def trigger_error(request):
     try:
-        a = None
-        a.method()  # Искусственная ошибка
+        1 / 0
     except Exception:
         rollbar.report_exc_info(sys.exc_info(), request)
         raise
-    return HttpResponse("This will never be reached")

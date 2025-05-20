@@ -34,7 +34,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',  # ← перемещено выше
+    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -82,7 +82,6 @@ LANGUAGE_CODE = 'en'
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
-
 USE_TZ = True
 
 LOCALE_PATHS = [BASE_DIR / 'locale']
@@ -93,7 +92,6 @@ STATIC_ROOT = BASE_DIR / 'static'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.User'
-
 LOGIN_URL = '/users/login/'
 
 if DEBUG:
@@ -107,7 +105,9 @@ ROLLBAR = {
     'root': BASE_DIR,
 }
 
-# Инициализация Rollbar
+# Инициализация Rollbar (только при DEBUG=False)
 import rollbar
+from rollbar.contrib.django.middleware import RollbarNotifierMiddleware
 
-rollbar.init(**ROLLBAR)
+if not DEBUG:
+    rollbar.init(**ROLLBAR)
