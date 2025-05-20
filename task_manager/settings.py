@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'users',
     'statuses',
     'task_manager',
+    'rollbar',
 ]
 
 MIDDLEWARE = [
