@@ -2,49 +2,58 @@
 {% load i18n %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru-ru">
 <head>
-    <meta charset="UTF-8">
-    <title>{% block title %}Task Manager{% endblock %}</title>
-    {% bootstrap_css %}
-    {% bootstrap_javascript %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>{% block title %}Менеджер задач Hexlet{% endblock %}</title>
+  {% bootstrap_css %}
+  {% bootstrap_javascript %}
 </head>
-<body class="bg-light">
-<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom box-shadow mb-3">
-    <div class="container">
-        <a class="navbar-brand" href="/">{% trans "Task Manager" %}</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'users:users_list' %}">{% trans "Users" %}</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'statuses:statuses_list' %}">{% trans "Statuses" %}</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'tasks:tasks_list' %}">{% trans "Tasks" %}</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'labels:labels_list' %}">{% trans "Labels" %}</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'users:logout' %}">{% trans "Logout" %}</a>
-                </li>
-            </ul>
-        </div>
-    </div>
+<body class="d-flex flex-column min-vh-100">
+<nav class="navbar navbar-expand-lg navbar-light bg-light ms-3">
+  <a class="navbar-brand" href="/">{% trans "Менеджер задач" %}</a>
+  <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarToggleExternalContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'users:users_list' %}">{% trans "Пользователи" %}</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav">
+      {% if request.user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'users:logout' %}">{% trans "Выход" %}</a>
+        </li>
+      {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'users:login' %}">{% trans "Вход" %}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'users:create' %}">{% trans "Регистрация" %}</a>
+        </li>
+      {% endif %}
+    </ul>
+  </div>
 </nav>
 
-<main class="container">
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} mt-3" role="alert">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
-
-    {% block content %}{% endblock %}
+<main class="container wrapper flex-grow-1">
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} mt-3" role="alert">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+  {% block content %}{% endblock %}
 </main>
+
+<footer>
+  <div class="container my-5 pt-4 border-top">
+    <a target="_blank" href="https://ru.hexlet.io">Hexlet</a>
+  </div>
+</footer>
 </body>
 </html>
