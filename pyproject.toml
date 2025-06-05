@@ -1,7 +1,7 @@
 [project]
 name = "hexlet-code"
 version = "0.1.0"
-description = ""
+description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
@@ -26,10 +26,10 @@ dev = [
 ]
 
 [tool.hatch.build.targets.sdist]
-include = ["task_manager", "users", "statuses"]
+include = ["task_manager"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["task_manager", "users", "statuses"]
+packages = ["task_manager"]
 
 [build-system]
 requires = ["hatchling"]
