@@ -17,14 +17,14 @@ class UserListView(ListView):
 
 class UserCreateView(SuccessMessageMixin, CreateView):
     form_class = CustomUserCreationForm
-    template_name = 'form.html'
+    template_name = 'users/form.html'
     success_url = reverse_lazy('users:users_list')
     success_message = 'Пользователь успешно зарегистрирован'
 
 
 class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = User
-    template_name = 'form.html'
+    template_name = 'users/form.html'
     fields = ['username', 'first_name', 'last_name']
     success_url = reverse_lazy('users:users_list')
 
@@ -34,7 +34,7 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = User
-    template_name = 'delete.html'
+    template_name = 'users/delete.html'
     success_url = reverse_lazy('users:users_list')
 
     def test_func(self):
