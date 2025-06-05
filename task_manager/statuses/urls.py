@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import (
+from task_manager.statuses.views import (
     StatusListView,
     StatusCreateView,
     StatusUpdateView,
