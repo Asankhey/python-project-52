@@ -1,15 +1,52 @@
-{% extends "base.html" %}
+{% extends "home.html" %}
+{% load django_bootstrap5 %}
 
-{% block content %}
-  <h1 class="my-4">{{ task.name }}</h1>
-  <p><strong>Описание:</strong> {{ task.description }}</p>
-  <p><strong>Автор:</strong> {{ task.author.get_full_name }}</p>
-  <p><strong>Исполнитель:</strong> {{ task.executor.get_full_name }}</p>
-  <p><strong>Статус:</strong> {{ task.status.name }}</p>
-  <p><strong>Дата создания:</strong> {{ task.created_at|date:"d.m.Y H:i" }}</p>
+{% load i18n %}
 
-  {% if task.author == request.user %}
-    <a href="{% url 'tasks:tasks_update' task.id %}" class="btn btn-secondary">Изменить</a>
-    <a href="{% url 'tasks:tasks_delete' task.id %}" class="btn btn-danger">Удалить</a>
-  {% endif %}
+{% block main %}
+        <h1 class="my-4">{{ title }}</h1>
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h2>{{ task.name }}</h2>
+            </div>
+            <div class="card-body bg-light">
+                <p>{{ task.description }}</p>
+                <hr>
+                <div class="container">
+                    <div class="row p-1">
+                        <div class="col">{% translate "Author" %}</div>
+                        <div class="col">{{ task.author }}</div>
+                    </div>
+                    <div class="row p-1">
+                        <div class="col">{% translate "Executor" %}</div>
+                        <div class="col">{{ task.executor | default:"" }}</div>
+                    </div>
+                    <div class="row p-1">
+                        <div class="col">{% translate "Status" %}</div>
+                        <div class="col">{{ task.status }}</div>
+                    </div>
+                    <div class="row p-1">
+                        <div class="col">{% translate "Created date" %}</div>
+                        <div class="col">{{ task.created_at }}</div>
+                    </div>
+                    <div class="row p-1">
+                        <div class="col">
+                        <h6>{% translate "Labels" %}:</h6>
+                        <ul>
+                            {% for label in task.labels.all %}
+                            <li>{{ label.name | default:""}}</li>
+                            {% endfor %}
+                        </ul>
+                        </div>
+                    </div>
+                    <div class="row p-1">
+                        <div class="col">
+                        <a href="{% url "task_update" task.id %}">{% translate "Edit" %}</a>
+                        <br>
+                        <a href="{% url "task_delete" task.id %}">{% translate "Delete" %}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 {% endblock %}

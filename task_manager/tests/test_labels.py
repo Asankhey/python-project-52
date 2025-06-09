@@ -1,53 +1,85 @@
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth import get_user_model
 
-from task_manager.models import Label
-
-User = get_user_model()
+from task_manager.labels.models import Label
+from task_manager.users.models import User
 
 
-class LabelCRUDTestCase(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='12345')
-        self.client.force_login(self.user)
-        self.label = Label.objects.create(name='bug')
+class LabelTestCase(TestCase):
+    fixtures = ["user_test", "label_test"]
 
-    def test_label_list_view(self):
-        response = self.client.get(reverse('labels:labels_list'))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, self.label.name)
+    def test_access(self):
+        resp1 = self.client.get(reverse('label_create'))
+        self.assertEqual(resp1.status_code, 302)
+        resp1 = self.client.get(reverse('labels'))
+        self.assertEqual(resp1.status_code, 302)
+        resp1 = self.client.get(reverse('label_update', kwargs={'pk': 1}))
+        self.assertEqual(resp1.status_code, 302)
+        resp1 = self.client.get(reverse('label_delete', kwargs={'pk': 1}))
+        self.assertEqual(resp1.status_code, 302)
 
-    def test_label_create_view(self):
-        response = self.client.post(
-            reverse('labels:labels_create'),
-            {'name': 'feature'}
+        self.login()
+        resp1 = self.client.get(reverse('label_create'))
+        self.assertEqual(resp1.status_code, 200)
+        resp1 = self.client.get(reverse('labels'))
+        self.assertEqual(resp1.status_code, 200)
+        resp1 = self.client.get(reverse('label_update', kwargs={'pk': 1}))
+        self.assertEqual(resp1.status_code, 200)
+        resp1 = self.client.get(reverse('label_delete', kwargs={'pk': 1}))
+        self.assertEqual(resp1.status_code, 200)
+
+    def login(self):
+        user = User.objects.get(id=1)
+        self.client.force_login(user)
+
+    def test_ListLabels(self):
+        self.login()
+        resp = self.client.get(reverse('labels'))
+        self.assertTrue(len(resp.context['labels']) == 2)
+
+    def test_CreateLabel(self):
+        self.login()
+        resp = self.client.get(reverse('label_create'))
+        self.assertEqual(resp.status_code, 200)
+        self.assertTemplateUsed(resp, template_name='general/general_form.html')
+
+        resp = self.client.post(reverse('label_create'), {
+            'name': 'test',
+        })
+        self.assertEqual(resp.status_code, 302)
+        self.assertRedirects(resp, reverse('labels'))
+        label = Label.objects.last()
+        self.assertEqual(label.name, 'test')
+
+        resp = self.client.get(reverse('labels'))
+        self.assertTrue(len(resp.context['labels']) == 3)
+
+    def test_UpdateLabel(self):
+        self.login()
+        label = Label.objects.get(id=1)
+        resp = self.client.get(
+            reverse('label_update', kwargs={'pk': label.id})
         )
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(Label.objects.filter(name='feature').exists())
+        self.assertEqual(resp.status_code, 200)
+        self.assertTemplateUsed(resp, template_name='general/general_form.html')
+        resp = self.client.post(
+            reverse('label_update', kwargs={'pk': label.id}), {
+                'name': 'test_label'
+            })
+        self.assertEqual(resp.status_code, 302)
+        label.refresh_from_db()
+        self.assertEqual(label.name, 'test_label')
 
-    def test_label_update_view(self):
-        response = self.client.post(
-            reverse('labels:labels_update', args=[self.label.id]),
-            {'name': 'critical'}
+    def test_DeleteLabel(self):
+        self.login()
+        label = Label.objects.get(name="home-test")
+        resp = self.client.get(
+            reverse('label_delete', kwargs={'pk': label.id})
         )
-        self.assertEqual(response.status_code, 302)
-        self.label.refresh_from_db()
-        self.assertEqual(self.label.name, 'critical')
-
-    def test_label_delete_view(self):
-        response = self.client.post(reverse('labels:labels_delete', args=[self.label.id]))
-        self.assertEqual(response.status_code, 302)
-        self.assertFalse(Label.objects.filter(id=self.label.id).exists())
-
-    def test_login_required_for_labels(self):
-        self.client.logout()
-        urls = [
-            reverse('labels:labels_list'),
-            reverse('labels:labels_create'),
-            reverse('labels:labels_update', args=[self.label.id]),
-            reverse('labels:labels_delete', args=[self.label.id]),
-        ]
-        for url in urls:
-            response = self.client.get(url)
-            self.assertRedirects(response, f'/users/login/?next={url}')
+        self.assertEqual(resp.status_code, 200)
+        resp = self.client.post(
+            reverse('label_delete', kwargs={'pk': label.id})
+        )
+        self.assertRedirects(resp, reverse('labels'))
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(Label.objects.count(), 1)

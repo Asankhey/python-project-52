@@ -1,44 +1,55 @@
-{% extends "base.html" %}
+{% extends "home.html" %}
+{% load django_bootstrap5 %}
 
-{% block content %}
-  <h1 class="my-4">Задачи</h1>
+{% load i18n %}
 
-  <form method="get" class="mb-3">
-    {{ filter.form.as_p }}
-    <button type="submit" class="btn btn-primary">Показать</button>
-  </form>
-
-  <a class="btn btn-primary mb-3" href="{% url 'tasks:tasks_create' %}">Создать задачу</a>
-
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Имя</th>
-        <th>Автор</th>
-        <th>Исполнитель</th>
-        <th>Статус</th>
-        <th>Дата создания</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for task in tasks %}
-        <tr>
-          <td><a href="{% url 'tasks:tasks_detail' task.id %}">{{ task.id }}</a></td>
-          <td>{{ task.name }}</td>
-          <td>{{ task.author.get_full_name }}</td>
-          <td>{{ task.executor.get_full_name }}</td>
-          <td>{{ task.status.name }}</td>
-          <td>{{ task.created_at|date:"d.m.Y H:i" }}</td>
-          <td>
-            {% if task.author == request.user %}
-              <a href="{% url 'tasks:tasks_update' task.id %}">Изменить</a><br>
-              <a href="{% url 'tasks:tasks_delete' task.id %}">Удалить</a>
-            {% endif %}
-          </td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+{% block main %}
+        <h1 class="my-4">
+            {{ title }}
+        </h1>
+        <a href="/tasks/create/">
+            <button class="btn btn-primary mb-3">{{ button }}</button>
+        </a>
+        <div class="card mb-3">
+            <div class="card-body bg-light">
+                <form method="get" class="form-inline center">
+                    {% bootstrap_form filter.form field_class="mr-3 ml-2" %}
+                    <div class="form-group">
+                        <div class="mr-3 ml-2">
+                            <input class="btn btn-primary " type="submit" value="{% translate 'Show' %}">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>{% translate "ID" %}</th>
+                    <th>{% translate "Task name" %}</th>
+                    <th>{% translate "Status" %}</th>
+                    <th>{% translate "Author" %}</th>
+                    <th>{% translate "Executor" %}</th>
+                    <th>{% translate "Created date" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                <tr>
+                    <td>{{ task.id }}</td>
+                    <td><a href="{% url 'task_view' task.id %}">{{ task.name }}</a></td>
+                    <td>{{ task.status }}</td>
+                    <td>{{ task.author | default:""}}</td>
+                    <td>{{ task.executor | default:""}}</td>
+                    <td>{{ task.created_at|date:'d.m.Y H:i' }}</td>
+                    <td>
+                        <a href="{% url "task_update" task.id %}">{% translate "Edit" %}</a>
+                        <br>
+                        <a href="{% url "task_delete" task.id %}">{% translate "Delete" %}</a>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 {% endblock %}

@@ -1,56 +1,30 @@
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib import messages
+from django.contrib.auth import logout
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.views import LoginView
 from django.contrib.messages.views import SuccessMessageMixin
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
-from django.http import HttpResponse  # 👈 добавлено для тестовой ошибки
-
-from .models import Task
-from .forms import TaskForm
+from django.utils.translation import gettext_lazy as _
+from django.views import View
 
 
-class TaskListView(LoginRequiredMixin, ListView):
-    model = Task
-    template_name = 'tasks/task_list.html'
-    context_object_name = 'tasks'
+class HomePageView(View):
+
+    def get(self, request, *args, **kwargs):
+        return render(request, 'home.html')
 
 
-class TaskCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
-    model = Task
-    form_class = TaskForm
-    template_name = 'form.html'
-    success_url = reverse_lazy('tasks:tasks_list')
-    success_message = 'Задача успешно создана'
-
-    def form_valid(self, form):
-        form.instance.author = self.request.user
-        return super().form_valid(form)
+class LoginUser(SuccessMessageMixin, LoginView):
+    form_class = AuthenticationForm
+    template_name = 'general/general_form.html'
+    extra_context = {'title': _("Login"), 'button': _("Enter")}
+    success_message = _('You were login')
 
 
-class TaskDetailView(LoginRequiredMixin, DetailView):
-    model = Task
-    template_name = 'tasks/task_detail.html'
-    context_object_name = 'task'
+class LogoutUser(View):
 
-
-class TaskUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
-    model = Task
-    form_class = TaskForm
-    template_name = 'form.html'
-    success_url = reverse_lazy('tasks:tasks_list')
-    success_message = 'Задача успешно изменена'
-
-
-class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, DeleteView):
-    model = Task
-    template_name = 'delete.html'
-    success_url = reverse_lazy('tasks:tasks_list')
-    success_message = 'Задача успешно удалена'
-
-    def test_func(self):
-        return self.request.user.pk == self.get_object().author.pk
-
-
-# 🚨 Тестовая вьюха для Rollbar
-def trigger_error(request):
-    division_by_zero = 1 / 0
-    return HttpResponse("This won't be reached.")
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        messages.info(request, _("You were logout"))
+        return redirect(reverse_lazy('home'))

@@ -1,35 +1,30 @@
 import django_filters
-from task_manager.models import Task
 from django import forms
-from django.contrib.auth import get_user_model
+from django.utils.translation import gettext_lazy as _
 
-User = get_user_model()
+from task_manager.labels.models import Label
+from task_manager.tasks.models import Task
 
 
 class TaskFilter(django_filters.FilterSet):
-    status = django_filters.ModelChoiceFilter(
-        queryset=Task._meta.get_field('status').related_model.objects.all(),
-        label='Статус',
-    )
-    executor = django_filters.ModelChoiceFilter(
-        queryset=User.objects.all(),
-        label='Исполнитель',
+    def show_own_task(self, queryset, arg, value):
+        if value:
+            return queryset.filter(author=self.request.user)
+        return queryset
+
+    own_tasks = django_filters.BooleanFilter(
+        method='show_own_task',
+        widget=forms.CheckboxInput,
+        label=_('Show own tasks'),
     )
     labels = django_filters.ModelChoiceFilter(
-        queryset=Task._meta.get_field('labels').related_model.objects.all(),
-        label='Метка',
-    )
-    self_tasks = django_filters.BooleanFilter(
-        method='filter_self_tasks',
-        label='Только свои задачи',
-        widget=forms.CheckboxInput,
+        queryset=Label.objects.all(),
+        label=_('Label filter'),
+        widget=forms.Select(attrs={
+            'class': 'form-select',
+        })
     )
 
     class Meta:
         model = Task
-        fields = ['status', 'executor', 'labels', 'self_tasks']
-
-    def filter_self_tasks(self, queryset, name, value):
-        if value:
-            return queryset.filter(author=self.request.user)
-        return queryset
+        fields = ['status', 'executor', 'labels']

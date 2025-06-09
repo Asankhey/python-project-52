@@ -1,27 +1,41 @@
-{% extends "base.html" %}
+{% extends 'home.html' %}
 
-{% block content %}
-  <h1 class="my-4">Метки</h1>
-  <a class="btn btn-primary mb-3" href="{% url 'labels:labels_create' %}">Создать метку</a>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Имя</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for label in labels %}
-      <tr>
-        <td>{{ label.id }}</td>
-        <td>{{ label.name }}</td>
-        <td>
-          <a href="{% url 'labels:labels_update' label.id %}" class="btn btn-sm btn-secondary">Изменить</a>
-          <a href="{% url 'labels:labels_delete' label.id %}" class="btn btn-sm btn-danger">Удалить</a>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+{% load i18n %}
+
+{% block main %}
+<div class="container wrapper flex-grow-1">
+      
+    <h1 class="my-4">
+        {{ title }}
+    </h1>
+    <a href="{% url "create_label" %}">
+      <button class="btn btn-primary mb-3" >{{ button }}</button>
+    </a>
+
+<table class="table table-striped">
+<thead>
+  <tr>
+    <th>{% translate "ID" %}</th>
+    <th>{% translate "Name" %}</th>
+    <th>{% translate "Created date" %}</th>
+  </tr>
+</thead>
+<tbody>
+  {%for label in labels%}
+    <tr>
+      <td>{{label.id}}</td>
+      <td>{{label.name}}</td>
+      <td>{{label.created_at|date:'d.m.Y H:i' }}</td>
+      <td>
+        <a href="{% url "update_label" label.id %}">{% translate "Edit"%}</a>
+        <br>
+        <a href="{% url "delete_label" label.id %}">{% translate "Delete"%}</a>
+      </td>
+    </form>
+    </tr>
+  {% endfor%}
+</tbody>
+</table>
+
+  </div>
 {% endblock %}
