@@ -9,16 +9,13 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY')
-DEBUG = os.getenv('DEBUG', True)
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-RENDER_EXTERNAL_HOSTNAME = os.getenv('RENDER_EXTERNAL_HOSTNAME', 'localhost')
+RENDER_EXTERNAL_HOSTNAME = os.getenv('RENDER_EXTERNAL_HOSTNAME')
 
-ALLOWED_HOSTS = [
-    'webserver',
-    '127.0.0.1',
-    RENDER_EXTERNAL_HOSTNAME,
-    'localhost'
-]
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'webserver']
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 INSTALLED_APPS = [
     'task_manager',
@@ -86,6 +83,15 @@ else:
         }
     }
 
+
+AUTH_USER_MODEL = 'users.User'
+
+LOGIN_URL = '/login'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = ''
+
+FIXTURE_DIRS = [BASE_DIR / 'task_manager' / 'fixtures']
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -104,20 +110,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = 'users.User'
-
-LOGIN_URL = '/login'
-LOGIN_REDIRECT_URL = 'home'
-LOGOUT_REDIRECT_URL = ''
-
-FIXTURE_DIRS = [BASE_DIR / 'task_manager' / 'fixtures']
-
-STORAGES = {
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
-
 LANGUAGE_CODE = 'ru'
 TIME_ZONE = 'UTC'
 
@@ -134,8 +126,14 @@ LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'locale'),
 )
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
