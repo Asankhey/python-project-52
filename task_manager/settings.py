@@ -90,7 +90,6 @@ LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = ''
 
-FIXTURE_DIRS = [BASE_DIR / 'task_manager' / 'fixtures']
 
 AUTH_PASSWORD_VALIDATORS = [
     {
