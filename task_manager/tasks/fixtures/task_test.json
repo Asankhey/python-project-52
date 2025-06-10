@@ -1,6 +1,6 @@
 [
     {
-        "model": "task.Task",
+        "model": "tasks.task",
         "pk": 1,
         "fields": {
             "name": "Hard work",
@@ -13,7 +13,7 @@
         }
     },
     {
-        "model": "task.Task",
+        "model": "tasks.task",
         "pk": 2,
         "fields": {
             "name": "Soft work",

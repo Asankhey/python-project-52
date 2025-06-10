@@ -1,6 +1,6 @@
 [
     {
-        "model": "status.Status",
+        "model": "statuses.status",
         "pk": 1,
         "fields": {
             "name": "Medium rear",
@@ -9,7 +9,7 @@
         }
     },
     {
-        "model": "status.Status",
+        "model": "statuses.status",
         "pk": 2,
         "fields": {
             "name": "Well done",

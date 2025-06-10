@@ -1,6 +1,6 @@
 [
     {
-        "model": "label.Label",
+        "model": "labels.label",
         "pk": 1,
         "fields": {
             "name": "Blue flag",
@@ -8,7 +8,7 @@
         }
     },
     {
-        "model": "label.Label",
+        "model": "labels.label",
         "pk": 2,
         "fields": {
             "name": "Red flag",
