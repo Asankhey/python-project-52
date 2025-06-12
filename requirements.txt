@@ -1,0 +1,11 @@
+asgiref==3.8.1
+dj-database-url==3.0.0
+Django==5.2.3
+python-dotenv==1.1.0
+sqlparse==0.5.3
+typing_extensions==4.14.0
+django-bootstrap5==23.3
+django-filter==24.2
+rollbar==0.16.3
+whitenoise==6.6.0
+gunicorn==22.0.0
