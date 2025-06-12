@@ -12,5 +12,5 @@ class Label(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = _("=Label=")
-        verbose_name_plural = _("=Labels=")
+        verbose_name = _("Label")
+        verbose_name_plural = _("Labels")

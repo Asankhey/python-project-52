@@ -46,8 +46,8 @@ class Task(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = _("=Task=")
-        verbose_name_plural = _("=Tasks=")
+        verbose_name = _("Task")
+        verbose_name_plural = _("Tasks")
 
 
 class TaskRelationLabel(models.Model):
