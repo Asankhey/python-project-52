@@ -17,7 +17,7 @@ class StatusMixin(AuthenticationMixin, SuccessMessageMixin):
     success_url = reverse_lazy('statuses')
     fields = ['name']
 
-    
+
 class ListStatuses(StatusMixin, ListView):
     context_object_name = 'statuses'
 

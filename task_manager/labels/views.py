@@ -17,7 +17,7 @@ class LabelMixin(AuthenticationMixin, SuccessMessageMixin):
     success_url = reverse_lazy('labels')
     fields = ['name']
 
-    
+
 class ListLabels(LabelMixin, ListView):
     context_object_name = 'labels'
 
