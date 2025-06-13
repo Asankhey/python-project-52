@@ -16,3 +16,8 @@ class UserForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'username']
+        labels = {
+            'first_name': _('Имя'),
+            'last_name': _('Фамилия'),
+            'username': _('Имя пользователя'),
+        }
