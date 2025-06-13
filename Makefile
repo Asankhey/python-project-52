@@ -20,6 +20,7 @@ migrations:
 	python manage.py makemigrations
 
 migrate:
+        python manage.py migrate --fake tasks 0002
 	python manage.py migrate
 
 migrations-user:
