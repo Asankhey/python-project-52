@@ -27,7 +27,11 @@ class SignUpUser(SuccessMessageMixin, CreateView):
 
 
 class UpdateUser(
-    AuthenticationMixin, AuthorizationMixin, SuccessMessageMixin, UpdateView):
+    AuthenticationMixin,
+    AuthorizationMixin,
+    SuccessMessageMixin,
+    UpdateView,
+):
     model = User
     extra_context = {
         'title': _('Changing user'),
@@ -41,7 +45,11 @@ class UpdateUser(
 
 
 class DeleteUser(
-    AuthenticationMixin, AuthorizationMixin, SuccessMessageMixin, DeleteView):
+    AuthenticationMixin,
+    AuthorizationMixin,
+    SuccessMessageMixin,
+    DeleteView,
+):
     model = User
     extra_context = {'title': _('Deleting user'), 'button': _("Yes, delete")}
     template_name = 'general/general_delete_confirm.html'
