@@ -8,76 +8,68 @@ class UserTestCase(TestCase):
     fixtures = ["user_test"]
 
     def test_signUp(self):
-        resp = self.client.get(reverse('user_create'))
-        self.assertEqual(resp.status_code, 200)
-        self.assertTemplateUsed(
-            resp,
-            template_name='general/general_form.html'
-        )
+        response = self.client.get(reverse('user_create'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'general/general_form.html')
 
-        resp = self.client.post(reverse('user_create'), {
+        response = self.client.post(reverse('user_create'), {
             'first_name': 'Nail',
             'last_name': 'Ivanovich',
             'username': 'fatty',
             'password1': 'Test123@#',
             'password2': 'Test123@#',
         })
-        self.assertEqual(resp.status_code, 302)
-        self.assertRedirects(resp, reverse('login'))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('login'))
 
         user = User.objects.last()
         self.assertEqual(user.first_name, 'Nail')
         self.assertEqual(user.last_name, 'Ivanovich')
         self.assertEqual(user.username, 'fatty')
 
-        resp = self.client.get(reverse('users'))
-        self.assertEqual(len(resp.context['users']), 3)
-
     def test_ListUsers(self):
-        resp = self.client.get(reverse('users'))
-        self.assertEqual(len(resp.context['users']), 2)
+        response = self.client.get(reverse('users'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['users']), 3)
 
     def test_UpdateUser(self):
-        user = User.objects.get(id=1)
-        url = reverse('user_update', kwargs={'pk': user.id})
+        user = User.objects.get(pk=2)
+        url = reverse('user_update', kwargs={'pk': user.pk})
 
-        resp = self.client.get(url)
-        self.assertEqual(resp.status_code, 302)
-        self.assertRedirects(resp, reverse('login'))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('login'))
 
         self.client.force_login(user)
-        resp = self.client.get(url)
-        self.assertEqual(resp.status_code, 200)
-        self.assertTemplateUsed(
-            resp,
-            template_name='general/general_form.html'
-        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'general/general_form.html')
 
-        resp = self.client.post(url, {
-            'first_name': 'Ivan',
-            'last_name': 'Niko',
-            'username': 'Ivashka',
-            'password1': 'Tell1@',
-            'password2': 'Tell1@',
+        response = self.client.post(url, {
+            'first_name': 'IvanUpdated',
+            'last_name': 'NewLast',
+            'username': 'IvanNew',
+            'password1': 'Newpass123@',
+            'password2': 'Newpass123@',
         })
-        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
         user.refresh_from_db()
-        self.assertEqual(user.first_name, 'Ivan')
+        self.assertEqual(user.first_name, 'IvanUpdated')
+        self.assertEqual(user.username, 'IvanNew')
 
     def test_DeleteUser(self):
-        user = User.objects.get(username="Gamer")
-        url = reverse('user_delete', kwargs={'pk': user.id})
+        user = User.objects.get(pk=2)
+        url = reverse('user_delete', kwargs={'pk': user.pk})
 
-        resp = self.client.get(url)
-        self.assertEqual(resp.status_code, 302)
-        self.assertRedirects(resp, reverse('login'))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('login'))
 
         self.client.force_login(user)
-        resp = self.client.get(url)
-        self.assertEqual(resp.status_code, 200)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
 
-        resp = self.client.post(url)
-        self.assertRedirects(resp, reverse('users'))
-        self.assertEqual(resp.status_code, 302)
-        self.assertEqual(User.objects.count(), 1)
+        response = self.client.post(url)
+        self.assertRedirects(response, reverse('users'))
+        self.assertEqual(User.objects.count(), 2)

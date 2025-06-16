@@ -1,56 +1,56 @@
 [
-{
-  "model": "users.user",
-  "pk": 1,
-  "fields": {
-    "password": "pbkdf2_sha256$1000000$hBgYt7XXG3rbtaWjcfYnqb$6XbcUJ49nh42LbHIbTH3YHBYjST7DQc528NFne4VDeQ=",
-    "last_login": "2025-06-12T20:48:00.011Z",
-    "is_superuser": true,
-    "username": "admin",
-    "email": "",
-    "is_staff": true,
-    "is_active": true,
-    "date_joined": "2025-06-12T20:47:18.157Z",
-    "first_name": "",
-    "last_name": "",
-    "groups": [],
-    "user_permissions": []
+  {
+    "model": "users.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$hBgYt7XXG3rbtaWjcfYnqb$6XbcUJ49nh42LbHIbTH3YHBYjST7DQc528NFne4VDeQ=",
+      "last_login": null,
+      "is_superuser": true,
+      "username": "admin",
+      "email": "",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2025-06-12T20:47:18.157Z",
+      "first_name": "",
+      "last_name": "",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$6xLzdtdmE53rwFqDQkCPKm$x7FuMQcy5NNsJGrKrnn0OBEjOG3d4Xsd0uDIDWFCitQ=", 
+      "last_login": null,
+      "is_superuser": false,
+      "username": "Ivan",
+      "email": "ivan.ivanov@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-06-12T20:49:26Z",
+      "first_name": "Ivan",
+      "last_name": "Ivanov",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$71oqI7LTImS7RxULn1Q5An$QoH8J/JyBxGfAjvZFGVYaFPg6/ft+L2s3VftO3qxS+A=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "Petr",
+      "email": "petr.petrov@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-06-12T20:54:07Z",
+      "first_name": "Petr",
+      "last_name": "Petrov",
+      "groups": [],
+      "user_permissions": []
+    }
   }
-},
-{
-  "model": "users.user",
-  "pk": 2,
-  "fields": {
-    "password": "12345",
-    "last_login": null,
-    "is_superuser": false,
-    "username": "Ivan",
-    "email": "ivan.ivanov@gmail.com",
-    "is_staff": false,
-    "is_active": true,
-    "date_joined": "2025-06-12T20:49:26Z",
-    "first_name": "Ivan",
-    "last_name": "Ivanov",
-    "groups": [],
-    "user_permissions": []
-  }
-},
-{
-  "model": "users.user",
-  "pk": 3,
-  "fields": {
-    "password": "123456",
-    "last_login": null,
-    "is_superuser": false,
-    "username": "Petr",
-    "email": "petr.petrov@gmail.com",
-    "is_staff": false,
-    "is_active": true,
-    "date_joined": "2025-06-12T20:54:07Z",
-    "first_name": "Petr",
-    "last_name": "Petrov",
-    "groups": [],
-    "user_permissions": []
-  }
-}
 ]
