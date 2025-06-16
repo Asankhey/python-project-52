@@ -9,23 +9,23 @@ class LabelTestCase(TestCase):
     fixtures = ["user_test", "label_test"]
 
     def test_access(self):
-        resp1 = self.client.get(reverse('label_create'))
+        resp1 = self.client.get(reverse('create_label'))
         self.assertEqual(resp1.status_code, 302)
         resp1 = self.client.get(reverse('labels'))
         self.assertEqual(resp1.status_code, 302)
-        resp1 = self.client.get(reverse('label_update', kwargs={'pk': 1}))
+        resp1 = self.client.get(reverse('update_label', kwargs={'pk': 1}))
         self.assertEqual(resp1.status_code, 302)
-        resp1 = self.client.get(reverse('label_delete', kwargs={'pk': 1}))
+        resp1 = self.client.get(reverse('delete_label', kwargs={'pk': 1}))
         self.assertEqual(resp1.status_code, 302)
 
         self.login()
-        resp1 = self.client.get(reverse('label_create'))
+        resp1 = self.client.get(reverse('create_label'))
         self.assertEqual(resp1.status_code, 200)
         resp1 = self.client.get(reverse('labels'))
         self.assertEqual(resp1.status_code, 200)
-        resp1 = self.client.get(reverse('label_update', kwargs={'pk': 1}))
+        resp1 = self.client.get(reverse('update_label', kwargs={'pk': 1}))
         self.assertEqual(resp1.status_code, 200)
-        resp1 = self.client.get(reverse('label_delete', kwargs={'pk': 1}))
+        resp1 = self.client.get(reverse('delete_label', kwargs={'pk': 1}))
         self.assertEqual(resp1.status_code, 200)
 
     def login(self):
@@ -39,11 +39,11 @@ class LabelTestCase(TestCase):
 
     def test_CreateLabel(self):
         self.login()
-        resp = self.client.get(reverse('label_create'))
+        resp = self.client.get(reverse('create_label'))
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, template_name='general/general_form.html')
 
-        resp = self.client.post(reverse('label_create'), {
+        resp = self.client.post(reverse('create_label'), {
             'name': 'test',
         })
         self.assertEqual(resp.status_code, 302)
@@ -58,12 +58,12 @@ class LabelTestCase(TestCase):
         self.login()
         label = Label.objects.get(id=1)
         resp = self.client.get(
-            reverse('label_update', kwargs={'pk': label.id})
+            reverse('update_label', kwargs={'pk': label.id})
         )
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, template_name='general/general_form.html')
         resp = self.client.post(
-            reverse('label_update', kwargs={'pk': label.id}), {
+            reverse('update_label', kwargs={'pk': label.id}), {
                 'name': 'test_label'
             })
         self.assertEqual(resp.status_code, 302)
@@ -74,11 +74,11 @@ class LabelTestCase(TestCase):
         self.login()
         label = Label.objects.get(name="home-test")
         resp = self.client.get(
-            reverse('label_delete', kwargs={'pk': label.id})
+            reverse('delete_label', kwargs={'pk': label.id})
         )
         self.assertEqual(resp.status_code, 200)
         resp = self.client.post(
-            reverse('label_delete', kwargs={'pk': label.id})
+            reverse('delete_label', kwargs={'pk': label.id})
         )
         self.assertRedirects(resp, reverse('labels'))
         self.assertEqual(resp.status_code, 302)
