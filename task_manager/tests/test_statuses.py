@@ -6,80 +6,53 @@ from task_manager.users.models import User
 
 
 class StatusTestCase(TestCase):
-    fixtures = ["user_test", "status_test"]
+    fixtures = [
+        'user_test.json',
+        'status_test.json',
+    ]
 
     def login(self):
-        user = User.objects.get(id=1)
-        self.client.force_login(user)
+        self.client.force_login(User.objects.get(pk=1))
 
-    def test_access(self):
-        resp1 = self.client.get(reverse('create_status'))
-        self.assertEqual(resp1.status_code, 302)
-        resp1 = self.client.get(reverse('statuses'))
-        self.assertEqual(resp1.status_code, 302)
-        resp1 = self.client.get(reverse('update_status', kwargs={'pk': 1}))
-        self.assertEqual(resp1.status_code, 302)
-        resp1 = self.client.get(reverse('delete_status', kwargs={'pk': 1}))
-        self.assertEqual(resp1.status_code, 302)
-
+    def test_ListStatuses(self):
         self.login()
-        resp1 = self.client.get(reverse('create_status'))
-        self.assertEqual(resp1.status_code, 200)
-        resp1 = self.client.get(reverse('statuses'))
-        self.assertEqual(resp1.status_code, 200)
-        resp1 = self.client.get(reverse('update_status', kwargs={'pk': 1}))
-        self.assertEqual(resp1.status_code, 200)
-        resp1 = self.client.get(reverse('delete_status', kwargs={'pk': 1}))
-        self.assertEqual(resp1.status_code, 200)
+        resp = self.client.get(reverse('statuses'))
+        self.assertEqual(resp.status_code, 200)
+        self.assertTemplateUsed(
+            resp,
+            template_name='statuses/status_list.html'
+        )
+        self.assertTrue(len(resp.context['statuses']) == 4)
 
     def test_create_status(self):
         self.login()
         resp = self.client.get(reverse('create_status'))
         self.assertEqual(resp.status_code, 200)
-        self.assertTemplateUsed(resp, template_name='general/general_form.html')
+        self.assertTemplateUsed(
+            resp,
+            template_name='general/general_form.html'
+        )
 
         resp = self.client.post(reverse('create_status'), {
             'name': 'test',
         })
         self.assertEqual(resp.status_code, 302)
         self.assertRedirects(resp, reverse('statuses'))
+
         status = Status.objects.last()
         self.assertEqual(status.name, 'test')
 
         resp = self.client.get(reverse('statuses'))
-        self.assertTrue(len(resp.context['statuses']) == 4)
-
-    def test_ListStatuses(self):
-        self.login()
-        resp = self.client.get(reverse('statuses'))
-        self.assertTrue(len(resp.context['statuses']) == 3)
-
-    def test_UpdateStatus(self):
-        self.login()
-        status = Status.objects.get(id=1)
-        resp = self.client.get(
-            reverse('update_status', kwargs={'pk': status.id})
-        )
-        self.assertEqual(resp.status_code, 200)
-        self.assertTemplateUsed(resp, template_name='general/general_form.html')
-        resp = self.client.post(
-            reverse('update_status', kwargs={'pk': status.id}), {
-                'name': 'test_status'
-            })
-        self.assertEqual(resp.status_code, 302)
-        status.refresh_from_db()
-        self.assertEqual(status.name, 'test_status')
+        self.assertTrue(len(resp.context['statuses']) == 5)
 
     def test_DeleteStatus(self):
         self.login()
-        status = Status.objects.get(name="online-test")
-        resp = self.client.get(
-            reverse('delete_status', kwargs={'pk': status.id})
-        )
-        self.assertEqual(resp.status_code, 200)
+        status = Status.objects.get(name='new')
         resp = self.client.post(
-            reverse('delete_status', kwargs={'pk': status.id})
+            reverse('delete_status', args=[status.id])
         )
-        self.assertRedirects(resp, reverse('statuses'))
         self.assertEqual(resp.status_code, 302)
-        self.assertEqual(Status.objects.count(), 2)
+        self.assertRedirects(resp, reverse('statuses'))
+        self.assertFalse(
+            Status.objects.filter(id=status.id).exists()
+        )

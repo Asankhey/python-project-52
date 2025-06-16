@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
+
 from task_manager.labels.models import Label
 from task_manager.users.models import User
 
@@ -19,7 +20,7 @@ class LabelTestCase(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(
             resp,
-            template_name='labels/index.html'
+            template_name='labels/label_list.html'
         )
         self.assertEqual(len(resp.context['labels']), 4)
         names = [label.name for label in resp.context['labels']]
@@ -39,10 +40,7 @@ class LabelTestCase(TestCase):
             'name': 'test-label',
         })
         self.assertEqual(resp.status_code, 302)
-        self.assertRedirects(
-            resp,
-            reverse('labels')
-        )
+        self.assertRedirects(resp, reverse('labels'))
 
         label = Label.objects.last()
         self.assertEqual(label.name, 'test-label')
@@ -54,13 +52,12 @@ class LabelTestCase(TestCase):
 
     def test_DeleteLabel(self):
         self.login()
-        label = Label.objects.get(name="bug")
+        label = Label.objects.get(name='bug')
         resp = self.client.post(
             reverse('delete_label', args=[label.id])
         )
         self.assertEqual(resp.status_code, 302)
-        self.assertRedirects(
-            resp,
-            reverse('labels')
+        self.assertRedirects(resp, reverse('labels'))
+        self.assertFalse(
+            Label.objects.filter(id=label.id).exists()
         )
-        self.assertFalse(Label.objects.filter(id=label.id).exists())
