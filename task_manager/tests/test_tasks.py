@@ -6,7 +6,12 @@ from task_manager.users.models import User
 
 
 class TaskTestCase(TestCase):
-    fixtures = ["user_test", "task_test"]
+    fixtures = [
+        'task_manager/users/fixtures/user_test.json',
+        'task_manager/statuses/fixtures/status_test.json',
+        'task_manager/labels/fixtures/label_test.json',
+        'task_manager/tasks/fixtures/task_test.json',
+    ]
 
     def login(self):
         user = User.objects.get(pk=1)
@@ -64,7 +69,7 @@ class TaskTestCase(TestCase):
         task = Task.objects.get(pk=1)
         response = self.client.get(reverse('task_view', kwargs={'pk': task.pk}))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'task/task_detail.html')
+        self.assertTemplateUsed(response, 'tasks/task_detail.html')
         self.assertEqual(task.name, 'Fix login bug')
 
     def test_UpdateTask(self):
