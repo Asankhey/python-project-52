@@ -14,7 +14,11 @@ class FilterTestCase(TestCase):
     def get_filter(self, data):
         request = self.factory.get('/fake-url', data)
         request.user = self.user
-        return TaskFilter(data=data, queryset=Task.objects.all(), request=request)
+        return TaskFilter(
+            data=data,
+            queryset=Task.objects.all(),
+            request=request
+        )
 
     def test_status(self):
         task_filter = self.get_filter({'status': 1})
