@@ -8,24 +8,26 @@ from ..mixins import AuthenticationMixin, AuthorizationTaskMixin
 from .filters import TaskFilter
 from .models import Task
 
+CREATE_TASK_TEXT = _("Create task")
+
 
 class TaskMixin(AuthenticationMixin, SuccessMessageMixin):
     model = Task
-    extra_context = {'title': _("Tasks"), 'button': _("Create task")}
+    extra_context = {'title': _("Tasks"), 'button': CREATE_TASK_TEXT}
     success_url = reverse_lazy('tasks')
     fields = ['name', 'description', 'status', 'executor', 'labels']
 
 
 class ListTask(TaskMixin, FilterView):
     context_object_name = 'tasks'
-    extra_context = {'title': _("Tasks"), 'button': _("Create task")}
+    extra_context = {'title': _("Tasks"), 'button': CREATE_TASK_TEXT}
     template_name = 'tasks/task_list.html'
     filterset_class = TaskFilter
 
 
 class CreateTask(TaskMixin, CreateView):
     success_message = _("Task created successfully")
-    extra_context = {'title': _("Create task"), 'button': _("Create")}
+    extra_context = {'title': CREATE_TASK_TEXT, 'button': _("Create")}
     template_name = 'general/general_form.html'
 
     def form_valid(self, form):
