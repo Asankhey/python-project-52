@@ -14,11 +14,7 @@ class FilterTestCase(TestCase):
     def get_filter(self, data):
         request = self.factory.get('/fake-url', data)
         request.user = self.user
-        return TaskFilter(
-            data=data,
-            queryset=Task.objects.all(),
-            request=request
-        )
+        return TaskFilter(data=data, queryset=Task.objects.all(), request=request)
 
     def test_status(self):
         task_filter = self.get_filter({'status': 1})
@@ -27,9 +23,9 @@ class FilterTestCase(TestCase):
     def test_executor(self):
         task_filter = self.get_filter({'executor': 1})
         self.assertEqual(task_filter.qs.count(), 2)
-        self.assertEqual(task_filter.qs.first().executor.username, 'IvGroz')
+        self.assertEqual(task_filter.qs.first().executor.username, 'admin')
 
     def test_author(self):
         task_filter = self.get_filter({'author': 1})
         self.assertEqual(task_filter.qs.count(), 2)
-        self.assertEqual(task_filter.qs.first().author.username, 'IvGroz')
+        self.assertEqual(task_filter.qs.first().author.username, 'admin')
