@@ -8,37 +8,37 @@ from task_manager.users.models import User
 class StatusTestCase(TestCase):
     fixtures = ["user_test", "status_test"]
 
-    def test_access(self):
-        resp1 = self.client.get(reverse('status_create'))
-        self.assertEqual(resp1.status_code, 302)
-        resp1 = self.client.get(reverse('statuses'))
-        self.assertEqual(resp1.status_code, 302)
-        resp1 = self.client.get(reverse('status_update', kwargs={'pk': 1}))
-        self.assertEqual(resp1.status_code, 302)
-        resp1 = self.client.get(reverse('status_delete', kwargs={'pk': 1}))
-        self.assertEqual(resp1.status_code, 302)
-
-        self.login()
-        resp1 = self.client.get(reverse('status_create'))
-        self.assertEqual(resp1.status_code, 200)
-        resp1 = self.client.get(reverse('statuses'))
-        self.assertEqual(resp1.status_code, 200)
-        resp1 = self.client.get(reverse('status_update', kwargs={'pk': 1}))
-        self.assertEqual(resp1.status_code, 200)
-        resp1 = self.client.get(reverse('status_delete', kwargs={'pk': 1}))
-        self.assertEqual(resp1.status_code, 200)
-
     def login(self):
         user = User.objects.get(id=1)
         self.client.force_login(user)
 
+    def test_access(self):
+        resp1 = self.client.get(reverse('create_status'))
+        self.assertEqual(resp1.status_code, 302)
+        resp1 = self.client.get(reverse('statuses'))
+        self.assertEqual(resp1.status_code, 302)
+        resp1 = self.client.get(reverse('update_status', kwargs={'pk': 1}))
+        self.assertEqual(resp1.status_code, 302)
+        resp1 = self.client.get(reverse('delete_status', kwargs={'pk': 1}))
+        self.assertEqual(resp1.status_code, 302)
+
+        self.login()
+        resp1 = self.client.get(reverse('create_status'))
+        self.assertEqual(resp1.status_code, 200)
+        resp1 = self.client.get(reverse('statuses'))
+        self.assertEqual(resp1.status_code, 200)
+        resp1 = self.client.get(reverse('update_status', kwargs={'pk': 1}))
+        self.assertEqual(resp1.status_code, 200)
+        resp1 = self.client.get(reverse('delete_status', kwargs={'pk': 1}))
+        self.assertEqual(resp1.status_code, 200)
+
     def test_create_status(self):
         self.login()
-        resp = self.client.get(reverse('status_create'))
+        resp = self.client.get(reverse('create_status'))
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, template_name='general/general_form.html')
 
-        resp = self.client.post(reverse('status_create'), {
+        resp = self.client.post(reverse('create_status'), {
             'name': 'test',
         })
         self.assertEqual(resp.status_code, 302)
@@ -58,12 +58,12 @@ class StatusTestCase(TestCase):
         self.login()
         status = Status.objects.get(id=1)
         resp = self.client.get(
-            reverse('status_update', kwargs={'pk': status.id})
+            reverse('update_status', kwargs={'pk': status.id})
         )
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, template_name='general/general_form.html')
         resp = self.client.post(
-            reverse('status_update', kwargs={'pk': status.id}), {
+            reverse('update_status', kwargs={'pk': status.id}), {
                 'name': 'test_status'
             })
         self.assertEqual(resp.status_code, 302)
@@ -74,11 +74,11 @@ class StatusTestCase(TestCase):
         self.login()
         status = Status.objects.get(name="online-test")
         resp = self.client.get(
-            reverse('status_delete', kwargs={'pk': status.id})
+            reverse('delete_status', kwargs={'pk': status.id})
         )
         self.assertEqual(resp.status_code, 200)
         resp = self.client.post(
-            reverse('status_delete', kwargs={'pk': status.id})
+            reverse('delete_status', kwargs={'pk': status.id})
         )
         self.assertRedirects(resp, reverse('statuses'))
         self.assertEqual(resp.status_code, 302)
